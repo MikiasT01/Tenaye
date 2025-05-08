@@ -1,4 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "cmake.sourceDirectory": "C:/Users/Big C/Documents/GitHub/Tenaye/tnaye_app/linux"
 }
 

@@ -86,14 +86,14 @@ class _HomeState extends State<Home> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            "images/psychologizt_pic.jpg",
+                            "images/general_practitioner_icon.jpg",
                             height: 120,
                             width: 140,
                             fit: BoxFit.cover,
                           ),
                           SizedBox(height: 10.0),
                           Text(
-                            "psychologist",
+                            "General practitioner",
                             style: TextStyle(
                               color: const Color.fromARGB(255, 241, 240, 244),
                               fontSize: 20.0,
@@ -124,14 +124,14 @@ class _HomeState extends State<Home> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            "images/General_practitioner_pic.jpg",
+                            "images/psychologizt_pic.jpg",
                             height: 120,
                             width: 120,
                             fit: BoxFit.cover,
                           ),
                           SizedBox(height: 10.0),
                           Text(
-                            "General medic",
+                            "Psychologist",
                             style: TextStyle(
                               color: const Color.fromARGB(255, 241, 240, 244),
                               fontSize: 17.0,

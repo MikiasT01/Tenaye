@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "514456227871",
+    "project_id": "tenaye-app",
+    "storage_bucket": "tenaye-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514456227871:android:85b21eb81312cdb546452a",
+        "android_client_info": {
+          "package_name": "com.MT01.tnaye_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCY4T5w7yeZzvtD1_UUDqDvxoFjsichWFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
