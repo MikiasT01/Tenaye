@@ -4,6 +4,7 @@ import 'package:tnaye_app/pages/home.dart';
 import 'package:tnaye_app/pages/login.dart';
 import 'package:random_string/random_string.dart';
 import 'package:tnaye_app/services/database.dart';
+import 'package:tnaye_app/services/shared_pref.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -23,8 +24,8 @@ class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
 
   registration() async {
-    print('Registration started');
-    print('Name: $name, Email: $email, Password: $password');
+    //print('Registration started');
+    //print('Name: $name, Email: $email, Password: $password');
     if (password != null && email != null && name != null) {
       try {
         //print('attemptiong to create user with email : $email');
@@ -32,6 +33,10 @@ class _SignUpState extends State<SignUp> {
             .createUserWithEmailAndPassword(email: email!, password: password!);
 
         String id = randomAlphaNumeric(10);
+        await SharedpreferenceHelper().saveUserName(_nameFieldController.text);
+        await SharedpreferenceHelper().saveUserEmail(_emailController.text);
+        await SharedpreferenceHelper().saveUserImage("");
+        await SharedpreferenceHelper().saveUserId(id);
         Map<String, dynamic> userInfoMap = {
           "Name": _nameFieldController.text,
           "Email": _emailController.text,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tnaye_app/pages/booking.dart';
+import 'package:tnaye_app/services/shared_pref.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -9,6 +10,26 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String? name, image;
+
+  getthedatafromsharedpref() async {
+    name = await SharedpreferenceHelper().getUserName();
+    image = await SharedpreferenceHelper().getUserImage();
+    setState(() {
+    });
+  }
+
+  getontheload() async {
+    await getthedatafromsharedpref();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getontheload();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +55,7 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     Text(
-                      "Solomon abebe",
+                      name!,
                       style: TextStyle(
                         color: const Color.fromARGB(255, 241, 240, 244),
                         fontSize: 24.0,
@@ -72,7 +93,13 @@ class _HomeState extends State<Home> {
                   fit: FlexFit.tight,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Booking(service: "psychologist")));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => Booking(service: "psychologist"),
+                        ),
+                      );
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.0),
@@ -111,7 +138,13 @@ class _HomeState extends State<Home> {
                   fit: FlexFit.tight,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Booking(service: "General medic")));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => Booking(service: "General medic"),
+                        ),
+                      );
                     },
                     child: Container(
                       height: 170.0,
@@ -148,15 +181,19 @@ class _HomeState extends State<Home> {
 
             SizedBox(height: 20.0),
 
-
             Row(
               children: [
                 Flexible(
                   fit: FlexFit.tight,
                   child: GestureDetector(
                     onTap: () {
-                       Navigator.push(context, MaterialPageRoute(builder: (context) => Booking(service: "chiropractor")));
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => Booking(service: "chiropractor"),
+                        ),
+                      );
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.0),
@@ -195,8 +232,12 @@ class _HomeState extends State<Home> {
                   fit: FlexFit.tight,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Booking(service: "Dentist")));
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Booking(service: "Dentist"),
+                        ),
+                      );
                     },
                     child: Container(
                       height: 170.0,

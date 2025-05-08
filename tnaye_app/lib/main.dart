@@ -14,12 +14,12 @@ void main() async {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
-      print('Firebase initialized successfully');
+      //print('Firebase initialized successfully');
     } else {
-      print('Firebase already initialized');
+      //print('Firebase already initialized');
     }
   } catch (e) {
-    print('Firebase initialization failed: $e');
+   // print('Firebase initialization failed: $e');
   }
   runApp(const MyApp());
 }
