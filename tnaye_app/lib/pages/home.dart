@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tnaye_app/pages/Health_prof_detail.dart';
 import 'package:tnaye_app/pages/booking.dart';
 import 'package:tnaye_app/services/shared_pref.dart';
 
@@ -49,7 +50,7 @@ class _HomeState extends State<Home> {
                     Text(
                       "Hello, ",
                       style: TextStyle(
-                        color: const Color.fromARGB(255, 183, 171, 206),
+                        color: const Color.fromARGB(255, 217, 217, 218),
                         fontSize: 24.0,
                         fontWeight: FontWeight.w500,
                       ),
@@ -97,7 +98,7 @@ class _HomeState extends State<Home> {
                         context,
                         MaterialPageRoute(
                           builder:
-                              (context) => Booking(service: "psychologist"),
+                              (context) => HealthProfDetail(service: "psychologist"),
                         ),
                       );
                     },
@@ -113,14 +114,14 @@ class _HomeState extends State<Home> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            "images/general_practitioner_icon.jpg",
+                            "images/psychologizt_pic.jpg",
                             height: 120,
                             width: 140,
                             fit: BoxFit.cover,
                           ),
                           SizedBox(height: 10.0),
                           Text(
-                            "General practitioner",
+                            "psychologist",
                             style: TextStyle(
                               color: const Color.fromARGB(255, 241, 240, 244),
                               fontSize: 20.0,
@@ -142,7 +143,7 @@ class _HomeState extends State<Home> {
                         context,
                         MaterialPageRoute(
                           builder:
-                              (context) => Booking(service: "General medic"),
+                              (context) => HealthProfDetail(service: "General medic"),
                         ),
                       );
                     },
@@ -157,14 +158,15 @@ class _HomeState extends State<Home> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            "images/psychologizt_pic.jpg",
+                            "images/general_practitioner_icon.jpg",
+                            
                             height: 120,
                             width: 120,
                             fit: BoxFit.cover,
                           ),
                           SizedBox(height: 10.0),
                           Text(
-                            "Psychologist",
+                            "general medic",
                             style: TextStyle(
                               color: const Color.fromARGB(255, 241, 240, 244),
                               fontSize: 17.0,
@@ -191,7 +193,7 @@ class _HomeState extends State<Home> {
                         context,
                         MaterialPageRoute(
                           builder:
-                              (context) => Booking(service: "chiropractor"),
+                              (context) => HealthProfDetail(service: "chiropractor"),
                         ),
                       );
                     },
@@ -235,7 +237,7 @@ class _HomeState extends State<Home> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Booking(service: "Dentist"),
+                          builder: (context) => HealthProfDetail(service: "Dentist"),
                         ),
                       );
                     },

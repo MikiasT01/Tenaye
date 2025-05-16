@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tnaye_app/pages/Health_prof_detail.dart';
 import 'package:tnaye_app/pages/booking.dart';
 import 'package:tnaye_app/pages/home.dart';
 import 'package:tnaye_app/pages/login.dart';
@@ -35,11 +36,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+      
       //home: Onboarding(),
-        //home: Home(),
+       // home: Home(),
       //home: Booking( service: "psychologist"),
       //home: LogIn(),
-      home: SignUp(),
+    home: SignUp(),
+    // home: HealthProfDetail()
     );
   }
 }
