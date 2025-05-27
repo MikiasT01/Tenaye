@@ -37,12 +37,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       
-      //home: Onboarding(),
+      home: Onboarding(),
        // home: Home(),
       //home: Booking( service: "psychologist"),
       //home: LogIn(),
-    home: SignUp(),
-    // home: HealthProfDetail()
+    //home: SignUp(),
+     //home: HealthProfDetail(service: "general practitioner"),
+      //home: HealthProfDetail(service: "Psychologist"),
+      //home: HealthProfDetail(service: "Dentist"),
+      //home: HealthProfDetail(service: "Physiotherapist"),
     );
   }
 }

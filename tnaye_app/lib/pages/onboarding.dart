@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tnaye_app/pages/home.dart';
+import 'package:tnaye_app/pages/login.dart';
+
 
 class Onboarding extends StatefulWidget {
   const Onboarding({super.key});
@@ -20,17 +21,11 @@ class _OnboardingState extends State<Onboarding> {
             Image.asset("images/doc1.jpg"),
             SizedBox(height: 50.0),
             GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
-              },
               child: GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Home()),
+                    MaterialPageRoute(builder: (context) => LogIn()),
                   );
                 },
                 child: Container(
@@ -44,6 +39,35 @@ class _OnboardingState extends State<Onboarding> {
                   ),
                   child: Text(
                     "Consult our Health experts",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20.0),
+            GestureDetector(
+              child: GestureDetector(
+                onTap: () {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => Home()),
+                 // );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 20.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.deepPurple,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "Register as a Health \n professional",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20.0,

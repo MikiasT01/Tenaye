@@ -98,7 +98,7 @@ class _HomeState extends State<Home> {
                         context,
                         MaterialPageRoute(
                           builder:
-                              (context) => HealthProfDetail(service: "psychologist"),
+                              (context) => HealthProfDetail(service: "Psychologist"),
                         ),
                       );
                     },
@@ -121,7 +121,7 @@ class _HomeState extends State<Home> {
                           ),
                           SizedBox(height: 10.0),
                           Text(
-                            "psychologist",
+                            "Psychologist",
                             style: TextStyle(
                               color: const Color.fromARGB(255, 241, 240, 244),
                               fontSize: 20.0,
@@ -143,7 +143,7 @@ class _HomeState extends State<Home> {
                         context,
                         MaterialPageRoute(
                           builder:
-                              (context) => HealthProfDetail(service: "General medic"),
+                              (context) => HealthProfDetail(service: "General Practitioner"),
                         ),
                       );
                     },
@@ -166,7 +166,7 @@ class _HomeState extends State<Home> {
                           ),
                           SizedBox(height: 10.0),
                           Text(
-                            "general medic",
+                            "General Practitioner",
                             style: TextStyle(
                               color: const Color.fromARGB(255, 241, 240, 244),
                               fontSize: 17.0,
@@ -193,7 +193,7 @@ class _HomeState extends State<Home> {
                         context,
                         MaterialPageRoute(
                           builder:
-                              (context) => HealthProfDetail(service: "chiropractor"),
+                              (context) => HealthProfDetail(service: "Chiropractor"),
                         ),
                       );
                     },
@@ -216,7 +216,7 @@ class _HomeState extends State<Home> {
                           ),
                           SizedBox(height: 10.0),
                           Text(
-                            "chiropractor",
+                            "Chiropractor",
                             style: TextStyle(
                               color: const Color.fromARGB(255, 241, 240, 244),
                               fontSize: 20.0,
