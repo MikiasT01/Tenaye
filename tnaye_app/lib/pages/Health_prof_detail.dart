@@ -1,15 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:tnaye_app/pages/booking.dart';
-import 'package:tnaye_app/read%20data/GetData.dart';
-import 'package:tnaye_app/services/shared_pref.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tnaye_app/pages/booking.dart';
 
 class HealthProfDetail extends StatefulWidget {
-  var service;
+  final String service;
 
-  HealthProfDetail({super.key, required this.service});
+  const HealthProfDetail({super.key, required this.service});
 
   @override
   State<HealthProfDetail> createState() => _HealthProffDetailState();
@@ -18,103 +14,160 @@ class HealthProfDetail extends StatefulWidget {
 class _HealthProffDetailState extends State<HealthProfDetail> {
   List<Map<String, dynamic>> healthProfessionals = [];
   late String doctor_type;
+  bool isLoading = true;
 
   Future<void> _loadHealthProffData() async {
     try {
-      final snapshot =
-          await FirebaseFirestore.instance
-              .collection(doctor_type)
-              //isEqualTo: widget.service.toLowerCase(),
-              //.where('Speciality', isEqualTo: widget.service)
-              .get();
-
-      healthProfessionals = snapshot.docs.map((doc) => doc.data()).toList();
+      final snapshot = await FirebaseFirestore.instance
+          .collection(doctor_type)
+          .get();
+      setState(() {
+        healthProfessionals = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+        isLoading = false;
+      });
     } catch (e) {
       print("Error loading health professionals: $e");
+      setState(() {
+        isLoading = false;
+      });
+      
     }
-    print(doctor_type);
   }
 
   @override
   void initState() {
-   doctor_type = "Health_professional_" +
-    (widget.service.toString().substring(0, 1).toUpperCase() +
-     widget.service.toString().substring(1));
-   // doctor_type = "Health_professional_"+widget.service.toString();
-
-    _loadHealthProffData();
     super.initState();
+    doctor_type = "Health_professional_" +
+        (widget.service.substring(0, 1).toUpperCase() + widget.service.substring(1));
+    _loadHealthProffData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.lightBlue,
-      body: Container(
-        margin: EdgeInsets.only(top: 50.0, left: 20.0, right: 20.0),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context);
+        return true;
+      },
+      child: Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+           
+          color: Color.fromARGB(255, 103, 61, 172),
 
-        child: Column(
-          children: [
-            Expanded(
-              child: FutureBuilder(
-                future: _loadHealthProffData(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-
-                  return ListView.builder(
-                    itemCount: healthProfessionals.length,
-                    itemBuilder: (context, index) {
-                      final doctor = healthProfessionals[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => Booking(service: doctor['Name']),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 68, 141, 178),
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Name: ${doctor['Name']}",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                "Age: ${doctor['Age']}",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              Text(
-                                "Speciality: ${doctor['Speciality']}",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
+            
+          ),
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.only(
+                  top: 50.0,
+                  left: 50.0,
+                  right: 50.0,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                 "Trusted Care from our expert\n"+ (widget.service.substring(0, 1).toUpperCase() + widget.service.substring(1))+"s",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
+              SliverPadding(
+                padding: const EdgeInsets.only(
+                  top: 20.0,
+                  left: 20.0,
+                  right: 20.0,
+                ),
+                sliver: isLoading
+                    ? SliverToBoxAdapter(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : healthProfessionals.isEmpty
+                        ? SliverToBoxAdapter(
+                            child: Center(
+                              child: Text(
+                                "No health professionals are currently available.",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          )
+                        : SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                final doctor = healthProfessionals[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Booking(service: doctor['Name'],
+                                            imageUrl: doctor['ImageUrl'] ?? '', // Assuming you have an image URL field),
+                                            bio: doctor['Bio'] ?? '',
+                                            age: doctor['Age'] ?? '',
+                                            speciality: doctor['Speciality'] ?? '',)
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(vertical: 10),
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color:Color.fromARGB(255, 74, 172, 218),
+
+                                      borderRadius: BorderRadius.circular(50),
+
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 10,
+                                          offset: Offset(0, 5),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          " Dr ${doctor['Name'] ?? ''}",
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          "Age: ${doctor['Age'] ?? ''}",
+                                          style: const TextStyle(color: Colors.white),
+                                        ),
+                                        Text(
+                                          "Speciality: ${doctor['Speciality'] ?? ''}",
+                                          style: const TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                              childCount: healthProfessionals.length,
+                            ),
+                          ),
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+        
         ////////////////check chat gpt and how to add the retruved date to the layout
         // Column(
         //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,7 +275,4 @@ class _HealthProffDetailState extends State<HealthProfDetail> {
         //   ],
 
         // ),
-      ),
-    );
-  }
-}
+     

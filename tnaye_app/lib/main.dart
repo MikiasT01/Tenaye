@@ -32,14 +32,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Tenaye',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       
-      home: Onboarding(),
-       // home: Home(),
-      //home: Booking( service: "psychologist"),
+    // home: Onboarding(),
+    //home: Home(),
+     home: Booking( service: "dr user", bio: "hdsfbsdbdjsbcskdasfdbdskvb skcbjdskc ksbjc dskc shb dfsvkcb bdkh vf vadkab vkc kc dk vv ca vd cvb sv n kc vv dfkjvnzdjcjka dc vjskhsh b kx ckjdXbvhcbfkjds hdsvdskv  vsda sdhjcasdbfc ddsbc ashdjbc dasj;fcnadshckjdbshds dsbchsd cds cdsahkabcksdc  sc sxcdbsaocdcnn snc jchdsbhdbcadsncsx kdschdsbvdsb vnkx cjbs ckjasbcvdsbvdbvbc h  ", age: 33, speciality: 'general practitioner', imageUrl: 'https://example.com/image.jpg'),
       //home: LogIn(),
     //home: SignUp(),
      //home: HealthProfDetail(service: "general practitioner"),
