@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tnaye_app/pages/Health_prof_detail.dart';
-import 'package:tnaye_app/services/shared_pref.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tnaye_app/services/database.dart';
+import 'package:tnaye_app/pages/Alldoctorespage.dart';
+import 'package:tnaye_app/pages/Booking.dart';
+import 'package:tnaye_app/pages/Health_prof_detail.dart';
+import 'base_scaffold.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,337 +13,300 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String? name, image;
+  Future<List<Map<String, dynamic>>> _fetchBestDoctors() async {
+    final collections = [
+      'Health_professional_Dentist',
+      'Health_professional_General Practitioner',
+      'Health_professional_Psychologist',
+      'Health_professional_Chiropractor',
+      'Health_professional_Pharmacist',
+      'Health_professional_Nurse',
+    ];
+    List<Map<String, dynamic>> allDoctors = [];
 
-  // Fetch data from SharedPreferences and Firestore if needed
-  Future<String?> _getUserData() async {
-    // Try to get the username from SharedPreferences
-    image = await SharedPreferencesHelper().getUserImage();
-    name = await SharedPreferencesHelper().getUserName();
-    // If username is not in SharedPreferences, fetch from Firestore
-    if (name == null) {
-      String? userId = await SharedPreferencesHelper().getUserId();
-      if (userId != null) {
-        DocumentSnapshot userDoc =
-            await FirebaseFirestore.instance
-                .collection('users')
-                .doc(userId)
-                .get();
-
-        if (userDoc.exists) {
-          name = userDoc.get('Name') as String?;
-          if (name != null) {
-            await SharedPreferencesHelper().saveUserName(name!);
-          }
-        }
-      }
+    for (var collection in collections) {
+      final snapshot = await FirebaseFirestore.instance
+          .collection(collection)
+          .orderBy('averageRating', descending: true)
+          .limit(3)
+          .get();
+      allDoctors.addAll(snapshot.docs.map((doc) => {
+            ...doc.data() as Map<String, dynamic>,
+            'id': doc.id,
+          }));
     }
-    return name;
-  }
 
-  @override
-  void initState() {
-    super.initState();
-    // Pre-load data (optional, as FutureBuilder will handle it)
-    _getUserData();
+    allDoctors.sort((a, b) => (b['averageRating'] ?? 0.0).compareTo(a['averageRating'] ?? 0.0));
+    return allDoctors;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BaseScaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 103, 61, 172),
-        ),
-        child: Container(
-          margin: EdgeInsets.only(top: 50.0, left: 50.0, right: 50.0),
-
+        margin: const EdgeInsets.symmetric(horizontal: 15.0),
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Hello, ",
-                        style: TextStyle(
-                          color: const Color.fromARGB(255, 217, 217, 218),
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      FutureBuilder<String?>(
-                        future: _getUserData(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Text(
-                              "Loading...",
-                              style: TextStyle(
-                                color: const Color.fromARGB(255, 241, 240, 244),
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          }
-                          if (snapshot.hasError || snapshot.data == null) {
-                            return Text(
-                              "Unknown User",
-                              style: TextStyle(
-                                color: const Color.fromARGB(255, 241, 240, 244),
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          }
-                          return Text(
-                            snapshot.data!,
-                            style: TextStyle(
-                              color: const Color.fromARGB(255, 241, 240, 244),
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(50.0),
-                    child: Image.asset(
-                      image ?? "images/user_image.png",
-                      width: 60.0,
-                      height: 60.0,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20.0),
-              Divider(color: Colors.white70),
-              SizedBox(height: 20.0),
-              Text(
-                "Services",
+              const SizedBox(height: 15.0),
+              const Text(
+                "Categories",
                 style: TextStyle(
-                  color: const Color.fromARGB(255, 241, 240, 244),
-                  fontSize: 24.0,
+                  color: Color.fromARGB(255, 89, 57, 127),
+                  fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 15.0),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildCategoryCard(context, "General Practitioner", "images/General Practitioner.jpg"),
+                    _buildCategoryCard(context, "psychologist", "images/psychologist.jpg"),
+                    _buildCategoryCard(context, "chiropractor", "images/chiropractor.jpg"),
+                    _buildCategoryCard(context, "dentist", "images/dentist.jpg"),
+                    _buildCategoryCard(context, "Pharmacist", "images/pharmacist.jpg"),
+                    _buildCategoryCard(context, "Nurse", "images/nurse.jpg"),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 15.0),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => HealthProfDetail(
-                                  service: "General Practitioner",
-                                ),
-                          ),
-                        );
-                      },
-                      child:  Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                20,
-                              ), // Adjust the radius as needed
-                              child: Image.asset(
-                                "images/General Practitioner.jpg",
-                                height: 200,
-                                width: 220,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ],
-                        
-                      ),
+                  const Text(
+                    "Best Doctors",
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 89, 57, 127),
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(width: 20.0),
-
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    HealthProfDetail(service: "Psychologist"),
-                          ),
-                        );
-                      },
-                      child:  Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                20,
-                              ), // Adjust the radius as needed
-                              child: Image.asset(
-                                "images/psychologist.jpg",
-                                height: 200,
-                                width: 220,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AllDoctorspage()),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color.fromARGB(255, 89, 57, 127),
+                            Color.fromARGB(255, 21, 70, 95),
+                            Color.fromARGB(255, 89, 57, 127),
                           ],
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const Text(
+                        "View all",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-
-              SizedBox(height: 20.0),
-
-              Row(
-                children: [
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    HealthProfDetail(service: "Chiropractor"),
-                          ),
-                        );
-                      },
-                      child:  Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                20,
-                              ), // Adjust the radius as needed
-                              child: Image.asset(
-                                "images/chiropractor.jpg",
-                                height: 200,
-                                width: 220,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ],
-                      )
-                    ),
-                  ),
-                  SizedBox(width: 20.0),
-
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    HealthProfDetail(service: "Dentist"),
-                          ),
-                        );
-                      },
-                      child:  Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                20,
-                              ), // Adjust the radius as needed
-                              child: Image.asset(
-                                "images/dentist.jpg",
-                                height: 200,
-                                width: 220,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ],
-                        
-                    ),
-                  ),
-                  )
-                ],
-              ),
-
-              SizedBox(height: 20.0),
-              //////////////////////////
-              Row(
-                children: [
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    HealthProfDetail(service: "Pharmacist"),
-                          ),
-                        );
-                      },
-                      child:  Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                20,
-                              ), // Adjust the radius as needed
-                              child: Image.asset(
-                                "images/pharmacist.jpg",
-                                height: 200,
-                                width: 220,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ],
-                        )
-                    ),
-                  ),
-                  SizedBox(width: 20.0),
-
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => HealthProfDetail(service: "Nurse"),
-                          ),
-                        );
-                      },
-                      child:  Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                20,
-                              ), // Adjust the radius as needed
-                              child: Image.asset(
-                                "images/nurse.jpg",
-                                height: 200,
-                                width: 220,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ],
-                        )
-                      
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 15.0),
+              SizedBox(
+                height: 130,
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: _fetchBestDoctors(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                          child: CircularProgressIndicator(
+                              color: Color.fromARGB(255, 89, 57, 127)));
+                    }
+                    if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Text(
+                        'No doctors available',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 89, 57, 127), fontSize: 12.0),
+                      );
+                    }
+                    final doctors = snapshot.data!;
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: doctors.map((doctor) {
+                          int age = 0;
+                          try {
+                            age = doctor['Age'] is String
+                                ? int.parse(doctor['Age'])
+                                : (doctor['Age'] as int? ?? 0);
+                          } catch (e) {
+                            print('Error parsing Age for doctor ${doctor['Name']}: $e');
+                          }
+                          return _buildDoctorCard(
+                            context,
+                            doctor['Name'],
+                            doctor['Speciality'] ?? '',
+                            doctor['imageurl'] ?? '',
+                            doctor['averageRating']?.toDouble() ?? 0.0,
+                            age,
+                            doctor['Bio'] ?? '',
+                          );
+                        }).toList(),
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),
+        ),
+      ),
+      currentIndex: 0,
+    );
+  }
+
+  Widget _buildCategoryCard(BuildContext context, String service, String imagePath) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HealthProfDetail(service: service)),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(right: 10.0),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15.0),
+              child: Image.asset(
+                imagePath,
+                height: 150,
+                width: 160,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 150,
+                    width: 160,
+                    color: Colors.grey,
+                    child: const Icon(Icons.error, color: Colors.red),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDoctorCard(
+    BuildContext context,
+    String name,
+    String specialty,
+    String imageUrl,
+    double rating,
+    int age,
+    String bio,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Booking(
+              service: name,
+              imageUrl: imageUrl,
+              bio: bio,
+              age: age,
+              speciality: specialty,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        width: 180,
+        margin: const EdgeInsets.only(right: 10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15.0),
+              child: imageUrl.isNotEmpty
+                  ? Image.network(
+                      imageUrl,
+                      height: 80,
+                      width: 120,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        print('Error loading image for $name: $error');
+                        return Container(
+                          height: 80,
+                          width: 120,
+                          color: Colors.grey,
+                          child: const Icon(Icons.error, color: Colors.red),
+                        );
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          height: 80,
+                          width: 120,
+                          color: Colors.grey[200],
+                          child: const Center(child: CircularProgressIndicator()),
+                        );
+                      },
+                    )
+                  : Container(
+                      height: 80,
+                      width: 120,
+                      color: Colors.grey,
+                      child: const Icon(Icons.person, color: Colors.white),
+                    ),
+            ),
+            const SizedBox(height: 6.0),
+            Text(
+              name,
+              style: const TextStyle(
+                color: Color.fromARGB(255, 89, 57, 127),
+                fontSize: 10.0,
+                fontWeight: FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    specialty,
+                    style: TextStyle(
+                        color: Color.fromARGB(255, 89, 57, 127).withOpacity(0.6),
+                        fontSize: 10.0),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const Spacer(),
+                Row(
+                  children: [
+                    const Icon(Icons.star,
+                        color: Color.fromARGB(255, 244, 240, 3), size: 12.0),
+                    const SizedBox(width: 3.0),
+                    Text(
+                      rating.toStringAsFixed(1),
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 89, 57, 127),
+                        fontSize: 10.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

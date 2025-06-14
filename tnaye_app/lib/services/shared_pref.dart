@@ -5,6 +5,8 @@ class SharedPreferencesHelper {
   static String userNameKey = "USER_NAME_KEY";
   static String userEmailKey = "USER_EMAIL_KEY";
   static String userImageKey = "USER_IMAGE_KEY";
+  static String userAgeKey = "USER_AGE_KEY";
+  static String userGenderKey = "USER_GENDER_KEY";
 
   // Save user ID
   Future<bool> saveUserId(String getUserID) async {
@@ -46,6 +48,28 @@ class SharedPreferencesHelper {
       return await prefs.setString(userImageKey, getUserImage);
     } catch (e) {
       print("Error saving user image: $e");
+      return false;
+    }
+  }
+
+  // Save user age
+  Future<bool> saveUserAge(String getUserAge) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      return await prefs.setString(userAgeKey, getUserAge);
+    } catch (e) {
+      print("Error saving user age: $e");
+      return false;
+    }
+  }
+
+  // Save user gender
+  Future<bool> saveUserGender(String getUserGender) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      return await prefs.setString(userGenderKey, getUserGender);
+    } catch (e) {
+      print("Error saving user gender: $e");
       return false;
     }
   }
@@ -94,6 +118,28 @@ class SharedPreferencesHelper {
     }
   }
 
+  // Get user age
+  Future<String?> getUserAge() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      return prefs.getString(userAgeKey);
+    } catch (e) {
+      print("Error retrieving user age: $e");
+      return null;
+    }
+  }
+
+  // Get user gender
+  Future<String?> getUserGender() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      return prefs.getString(userGenderKey);
+    } catch (e) {
+      print("Error retrieving user gender: $e");
+      return null;
+    }
+  }
+
   // Clear user data (for logout)
   Future<bool> clearUserData() async {
     try {
@@ -102,6 +148,8 @@ class SharedPreferencesHelper {
       await prefs.remove(userNameKey);
       await prefs.remove(userEmailKey);
       await prefs.remove(userImageKey);
+      await prefs.remove(userAgeKey);
+      await prefs.remove(userGenderKey);
       return true;
     } catch (e) {
       print("Error clearing user data: $e");
