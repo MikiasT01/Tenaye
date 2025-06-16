@@ -17,57 +17,73 @@ class BaseScaffold extends StatefulWidget {
 
 class _BaseScaffoldState extends State<BaseScaffold> {
   int _currentIndex = 0;
+  String? _userImageUrl; // To store the user's image URL
 
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.currentIndex;
+    _loadUserImage(); // Load the user image on init
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadUserImage(); // Reload image when dependencies change (e.g., after navigation)
+  }
+
+  Future<void> _loadUserImage() async {
+    // Fetch image URL from SharedPreferences or default to null
+    final imageUrl = await SharedPreferencesHelper().getUserImage();
+    if (mounted) {
+      setState(() {
+        _userImageUrl = imageUrl;
+      });
+    }
   }
 
   // Helper method for logout confirmation
   Future<void> _confirmLogout(BuildContext context) async {
-    bool confirm =
-        await showDialog(
+    bool confirm = await showDialog(
           context: context,
-          builder:
-              (context) => AlertDialog(
-                title: const Text(
-                  'Confirm Logout',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 89, 57, 127),
-                    fontSize: 16.0,
-                  ),
-                ),
-                content: const Text(
-                  'Are you sure you want to log out?',
+          builder: (context) => AlertDialog(
+            title: const Text(
+              'Confirm Logout',
+              style: TextStyle(
+                color: Color.fromARGB(255, 89, 57, 127),
+                fontSize: 16.0,
+              ),
+            ),
+            content: const Text(
+              'Are you sure you want to log out?',
+              style: TextStyle(
+                color: Color.fromARGB(255, 89, 57, 127),
+                fontSize: 14.0,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text(
+                  'Cancel',
                   style: TextStyle(
                     color: Color.fromARGB(255, 89, 57, 127),
                     fontSize: 14.0,
                   ),
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 89, 57, 127),
-                        fontSize: 14.0,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: const Text(
-                      'Logout',
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 89, 57, 127),
-                        fontSize: 14.0,
-                      ),
-                    ),
-                  ),
-                ],
               ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 89, 57, 127),
+                    fontSize: 14.0,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ) ??
         false;
 
@@ -153,28 +169,39 @@ class _BaseScaffoldState extends State<BaseScaffold> {
                         PopupMenuButton<String>(
                           icon: ClipRRect(
                             borderRadius: BorderRadius.circular(35.0),
-                            child: Image.asset(
-                              "images/user_image.png",
-                              width: 40.0,
-                              height: 40.0,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(
-                                  Icons.person,
-                                  size: 40.0,
-                                  color: Color.fromARGB(255, 89, 57, 127),
-                                );
-                              },
-                            ),
+                            child: _userImageUrl != null && _userImageUrl!.isNotEmpty
+                                ? Image.network(
+                                    _userImageUrl!,
+                                    width: 40.0,
+                                    height: 40.0,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        "images/user_image.png",
+                                        width: 40.0,
+                                        height: 40.0,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  )
+                                : Image.asset(
+                                    "images/user_image.png",
+                                    width: 40.0,
+                                    height: 40.0,
+                                    fit: BoxFit.cover,
+                                  ),
                           ),
                           onSelected: (String value) {
                             if (value == 'profile') {
-                              Navigator.pushReplacement(
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ProfilePage(),
                                 ),
-                              );
+                              ).then((_) {
+                                // Refresh image after returning from ProfilePage
+                                _loadUserImage();
+                              });
                             } else if (value == 'home') {
                               Navigator.pushReplacement(
                                 context,
@@ -184,62 +211,59 @@ class _BaseScaffoldState extends State<BaseScaffold> {
                               _confirmLogout(context);
                             }
                           },
-                          itemBuilder:
-                              (
-                                BuildContext context,
-                              ) => <PopupMenuEntry<String>>[
-                                const PopupMenuItem<String>(
-                                  value: 'profile',
-                                  child: ListTile(
-                                    leading: Icon(
-                                      Icons.person,
-                                      color: Color.fromARGB(255, 89, 57, 127),
-                                      size: 18.0,
-                                    ),
-                                    title: Text(
-                                      'Profile',
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 89, 57, 127),
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
+                          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                            const PopupMenuItem<String>(
+                              value: 'profile',
+                              child: ListTile(
+                                leading: Icon(
+                                  Icons.person,
+                                  color: Color.fromARGB(255, 89, 57, 127),
+                                  size: 18.0,
+                                ),
+                                title: Text(
+                                  'Profile',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 89, 57, 127),
+                                    fontSize: 14.0,
                                   ),
                                 ),
-                                const PopupMenuItem<String>(
-                                  value: 'home',
-                                  child: ListTile(
-                                    leading: Icon(
-                                      Icons.home,
-                                      color: Color.fromARGB(255, 89, 57, 127),
-                                      size: 18.0,
-                                    ),
-                                    title: Text(
-                                      'Home',
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 89, 57, 127),
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
+                              ),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'home',
+                              child: ListTile(
+                                leading: Icon(
+                                  Icons.home,
+                                  color: Color.fromARGB(255, 89, 57, 127),
+                                  size: 18.0,
+                                ),
+                                title: Text(
+                                  'Home',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 89, 57, 127),
+                                    fontSize: 14.0,
                                   ),
                                 ),
-                                const PopupMenuItem<String>(
-                                  value: 'logout',
-                                  child: ListTile(
-                                    leading: Icon(
-                                      Icons.logout,
-                                      color: Color.fromARGB(255, 89, 57, 127),
-                                      size: 18.0,
-                                    ),
-                                    title: Text(
-                                      'Logout',
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 89, 57, 127),
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
+                              ),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'logout',
+                              child: ListTile(
+                                leading: Icon(
+                                  Icons.logout,
+                                  color: Color.fromARGB(255, 89, 57, 127),
+                                  size: 18.0,
+                                ),
+                                title: Text(
+                                  'Logout',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 89, 57, 127),
+                                    fontSize: 14.0,
                                   ),
                                 ),
-                              ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -259,12 +283,7 @@ class _BaseScaffoldState extends State<BaseScaffold> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         selectedItemColor: const Color.fromARGB(255, 89, 57, 127),
-        unselectedItemColor: const Color.fromARGB(
-          255,
-          89,
-          57,
-          127,
-        ).withOpacity(0.6),
+        unselectedItemColor: const Color.fromARGB(255, 89, 57, 127).withOpacity(0.6),
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {

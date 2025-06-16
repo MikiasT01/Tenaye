@@ -1,80 +1,129 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesHelper {
-  static String userIdKey = "USER_ID_KEY";
-  static String userNameKey = "USER_NAME_KEY";
-  static String userEmailKey = "USER_EMAIL_KEY";
-  static String userImageKey = "USER_IMAGE_KEY";
-  static String userAgeKey = "USER_AGE_KEY";
-  static String userGenderKey = "USER_GENDER_KEY";
+  static const String userIdKey = "USER_ID_KEY";
+  static const String userNameKey = "USER_NAME_KEY";
+  static const String userEmailKey = "USER_EMAIL_KEY";
+  static const String userImageKey = "USER_IMAGE_KEY";
+  static const String userAgeKey = "USER_AGE_KEY";
+  static const String userGenderKey = "USER_GENDER_KEY";
 
-  // Save user ID
-  Future<bool> saveUserId(String getUserID) async {
+  // Save all user data in one call
+  Future<bool> saveUserData({
+    String? userId,
+    String? userName,
+    String? userEmail,
+    String? userImage,
+    String? userAge,
+    String? userGender,
+  }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      return await prefs.setString(userIdKey, getUserID);
+      if (userId != null) await prefs.setString(userIdKey, userId);
+      if (userName != null) await prefs.setString(userNameKey, userName);
+      if (userEmail != null) await prefs.setString(userEmailKey, userEmail);
+      if (userImage != null) await prefs.setString(userImageKey, userImage);
+      if (userAge != null) await prefs.setString(userAgeKey, userAge);
+      if (userGender != null) await prefs.setString(userGenderKey, userGender);
+      return true;
+    } catch (e) {
+      print("Error saving user data: $e");
+      return false;
+    }
+  }
+
+  // Individual save methods (for specific updates)
+  Future<bool> saveUserId(String? userId) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (userId != null) {
+        return await prefs.setString(userIdKey, userId);
+      } else {
+        await prefs.remove(userIdKey);
+        return true;
+      }
     } catch (e) {
       print("Error saving user ID: $e");
       return false;
     }
   }
 
-  // Save user name
-  Future<bool> saveUserName(String getUserName) async {
+  Future<bool> saveUserName(String? userName) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      return await prefs.setString(userNameKey, getUserName);
+      if (userName != null) {
+        return await prefs.setString(userNameKey, userName);
+      } else {
+        await prefs.remove(userNameKey);
+        return true;
+      }
     } catch (e) {
       print("Error saving user name: $e");
       return false;
     }
   }
 
-  // Save user email
-  Future<bool> saveUserEmail(String getUserEmail) async {
+  Future<bool> saveUserEmail(String? userEmail) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      return await prefs.setString(userEmailKey, getUserEmail);
+      if (userEmail != null) {
+        return await prefs.setString(userEmailKey, userEmail);
+      } else {
+        await prefs.remove(userEmailKey);
+        return true;
+      }
     } catch (e) {
       print("Error saving user email: $e");
       return false;
     }
   }
 
-  // Save user image
-  Future<bool> saveUserImage(String getUserImage) async {
+  Future<bool> saveUserImage(String? userImage) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      return await prefs.setString(userImageKey, getUserImage);
+      if (userImage != null) {
+        return await prefs.setString(userImageKey, userImage);
+      } else {
+        await prefs.remove(userImageKey);
+        return true;
+      }
     } catch (e) {
       print("Error saving user image: $e");
       return false;
     }
   }
 
-  // Save user age
-  Future<bool> saveUserAge(String getUserAge) async {
+  Future<bool> saveUserAge(String? userAge) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      return await prefs.setString(userAgeKey, getUserAge);
+      if (userAge != null) {
+        return await prefs.setString(userAgeKey, userAge);
+      } else {
+        await prefs.remove(userAgeKey);
+        return true;
+      }
     } catch (e) {
       print("Error saving user age: $e");
       return false;
     }
   }
 
-  // Save user gender
-  Future<bool> saveUserGender(String getUserGender) async {
+  Future<bool> saveUserGender(String? userGender) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      return await prefs.setString(userGenderKey, getUserGender);
+      if (userGender != null) {
+        return await prefs.setString(userGenderKey, userGender);
+      } else {
+        await prefs.remove(userGenderKey);
+        return true;
+      }
     } catch (e) {
       print("Error saving user gender: $e");
       return false;
     }
   }
 
-  // Get user ID
+  // Get methods
   Future<String?> getUserId() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -85,7 +134,6 @@ class SharedPreferencesHelper {
     }
   }
 
-  // Get user name
   Future<String?> getUserName() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -96,7 +144,6 @@ class SharedPreferencesHelper {
     }
   }
 
-  // Get user email
   Future<String?> getUserEmail() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -107,7 +154,6 @@ class SharedPreferencesHelper {
     }
   }
 
-  // Get user image
   Future<String?> getUserImage() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -118,7 +164,6 @@ class SharedPreferencesHelper {
     }
   }
 
-  // Get user age
   Future<String?> getUserAge() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -129,7 +174,6 @@ class SharedPreferencesHelper {
     }
   }
 
-  // Get user gender
   Future<String?> getUserGender() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -144,12 +188,7 @@ class SharedPreferencesHelper {
   Future<bool> clearUserData() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.remove(userIdKey);
-      await prefs.remove(userNameKey);
-      await prefs.remove(userEmailKey);
-      await prefs.remove(userImageKey);
-      await prefs.remove(userAgeKey);
-      await prefs.remove(userGenderKey);
+      await prefs.clear(); // Clear all preferences (more thorough cleanup)
       return true;
     } catch (e) {
       print("Error clearing user data: $e");

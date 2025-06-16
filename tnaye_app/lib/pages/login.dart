@@ -15,38 +15,33 @@ class LogIn extends StatefulWidget {
 
 class _LogInState extends State<LogIn> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  bool _isPasswordVisible = false; // State for password visibility
+  final TextEditingController _resetEmailController = TextEditingController(); // For forget password
+  bool _isPasswordVisible = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _resetEmailController.dispose();
     super.dispose();
   }
 
   Future<void> loginUser() async {
     if (_formKey.currentState!.validate()) {
       try {
-        // Attempt to sign in with Firebase Authentication
         UserCredential userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
               email: _emailController.text.trim(),
               password: _passwordController.text.trim(),
             );
 
-        // Get the user's UID from Firebase Authentication
         String userId = userCredential.user!.uid;
-
-        // Check if the user exists in Firestore
         DocumentSnapshot userDoc =
             await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
         if (!userDoc.exists) {
-          // If user does not exist in Firestore, show error
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
@@ -55,17 +50,14 @@ class _LogInState extends State<LogIn> {
               ),
             ),
           );
-          // Optionally, sign out the user from Firebase Authentication
           await FirebaseAuth.instance.signOut();
           return;
         }
 
-        // User exists, retrieve their data
         String userName = userDoc.get('Name') as String;
         String userEmail = userDoc.get('Email') as String;
         String? userImage = userDoc.get('Image') as String?;
 
-        // Save user data to SharedPreferences
         await SharedPreferencesHelper().saveUserId(userId);
         await SharedPreferencesHelper().saveUserName(userName);
         await SharedPreferencesHelper().saveUserEmail(userEmail);
@@ -75,7 +67,6 @@ class _LogInState extends State<LogIn> {
           await SharedPreferencesHelper().saveUserImage("");
         }
 
-        // Show success message and navigate to Home page
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -106,7 +97,7 @@ class _LogInState extends State<LogIn> {
             errorMessage = "This user account has been disabled.";
             break;
           default:
-            errorMessage = "An error occurred. Please try again.";
+            errorMessage = "An error occurred. Check email and password.";
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -127,15 +118,70 @@ class _LogInState extends State<LogIn> {
     }
   }
 
+  Future<void> _resetPassword() async {
+    if (_resetEmailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Please enter your email address.",
+            style: TextStyle(fontSize: 14.0),
+          ),
+        ),
+      );
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: _resetEmailController.text.trim());
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Password reset link sent! Check your email.",
+            style: TextStyle(fontSize: 14.0),
+          ),
+        ),
+      );
+      Navigator.pop(context); // Close the dialog
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      switch (e.code) {
+        case 'invalid-email':
+          errorMessage = "The email address is not valid.";
+          break;
+        case 'user-not-found':
+          errorMessage = "No user found with this email.";
+          break;
+        default:
+          errorMessage = "An error occurred. Please try again.";
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage, style: const TextStyle(fontSize: 14.0)),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "An unexpected error occurred. Please try again.",
+            style: TextStyle(fontSize: 14.0),
+          ),
+        ),
+      );
+      print("Unexpected error during password reset: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal, // Added for sideways scrolling
+        scrollDirection: Axis.horizontal,
         child: SingleChildScrollView(
-          scrollDirection: Axis.vertical, // Existing vertical scrolling
+          scrollDirection: Axis.vertical,
           child: Container(
-            width: MediaQuery.of(context).size.width, // Ensure minimum width matches screen
+            width: MediaQuery.of(context).size.width,
             child: Stack(
               children: [
                 Container(
@@ -261,6 +307,70 @@ class _LogInState extends State<LogIn> {
                             }
                             return null;
                           },
+                        ),
+                        const SizedBox(height: 10.0),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text(
+                                    "Reset Password",
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 89, 57, 127),
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextField(
+                                        controller: _resetEmailController,
+                                        decoration: InputDecoration(
+                                          hintText: "Enter your email",
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(15.0),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 15.0),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color.fromARGB(255, 89, 57, 127),
+                                        ),
+                                        onPressed: _resetPassword,
+                                        child: const Text(
+                                          "Send Reset Link",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text(
+                                        "Cancel",
+                                        style: TextStyle(
+                                          color: Color.fromARGB(255, 89, 57, 127),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              "Forget Password?",
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 101, 61, 109),
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 20.0),
                         GestureDetector(

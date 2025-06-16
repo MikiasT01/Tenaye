@@ -15,7 +15,7 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
   List<Map<String, dynamic>> _allDoctors = [];
   List<Map<String, dynamic>> _filteredDoctors = [];
   String? _selectedCategory;
-  int? _selectedAge;
+  Map<String, int>? _selectedAgeRange; // Changed to store min and max
   String? _selectedGender;
 
   @override
@@ -74,7 +74,7 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
       if (_selectedCategory != null) {
         _filteredDoctors = _filteredDoctors.where((doctor) => doctor['specialty'] == _selectedCategory).toList();
       }
-      if (_selectedAge != null) {
+      if (_selectedAgeRange != null) {
         _filteredDoctors = _filteredDoctors.where((doctor) {
           int age = 0;
           try {
@@ -82,7 +82,7 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
           } catch (e) {
             print('Error parsing Age for doctor ${doctor['Name']}: $e');
           }
-          return age == _selectedAge;
+          return age >= _selectedAgeRange!['min']! && age <= _selectedAgeRange!['max']!;
         }).toList();
       }
       if (_selectedGender != null) {
@@ -97,79 +97,88 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Filter Doctors', style: TextStyle(color: Color.fromARGB(255, 89, 57, 127), fontSize: 18.0)),
-          content: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  DropdownButton<String>(
-                    hint: const Text('Select Category', style: TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
-                    value: _selectedCategory,
-                    items: [
-                      'Dentist',
-                      'General Practitioner',
-                      'Psychologist',
-                      'Chiropractor',
-                      'Pharmacist',
-                      'Nurse',
-                    ].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value, style: const TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedCategory = value;
-                      });
-                      _filterDoctors();
-                      Navigator.pop(context);
-                    },
-                  ),
-                  DropdownButton<int>(
-                    hint: const Text('Select Age', style: TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
-                    value: _selectedAge,
-                    items: [25, 30, 35, 40, 45, 50].map((int value) {
-                      return DropdownMenuItem<int>(
-                        value: value,
-                        child: Text(value.toString(), style: const TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedAge = value;
-                      });
-                      _filterDoctors();
-                      Navigator.pop(context);
-                    },
-                  ),
-                  DropdownButton<String>(
-                    hint: const Text('Select Gender', style: TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
-                    value: _selectedGender,
-                    items: ['Male', 'Female', 'Other'].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value, style: const TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedGender = value;
-                      });
-                      _filterDoctors();
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              );
-            },
+          content: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    DropdownButton<String>(
+                      hint: const Text('Select Category', style: TextStyle(color: Color.fromARGB(255, 89, 57, 127), fontSize: 15.0)),
+                      value: _selectedCategory,
+                      items: [
+                        'Dentist',
+                        'General Practitioner',
+                        'Psychologist',
+                        'Chiropractor',
+                        'Pharmacist',
+                        'Nurse',
+                      ].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value, style: const TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedCategory = value;
+                        });
+                        Navigator.pop(context);
+                        _filterDoctors(); // Apply filter after closing dialog
+                      },
+                    ),
+                    DropdownButton<Map<String, int>>(
+                      hint: const Text('Select Age Range', style: TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
+                      value: _selectedAgeRange,
+                      items: [
+                        {'min': 25, 'max': 30},
+                        {'min': 30, 'max': 35},
+                        {'min': 35, 'max': 40},
+                        {'min': 40, 'max': 45},
+                        {'min': 45, 'max': 50},
+                      ].map((Map<String, int> range) {
+                        return DropdownMenuItem<Map<String, int>>(
+                          value: range,
+                          child: Text('${range['min']}-${range['max']}', style: const TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedAgeRange = value;
+                        });
+                        Navigator.pop(context);
+                        _filterDoctors(); // Apply filter after closing dialog
+                      },
+                    ),
+                    DropdownButton<String>(
+                      hint: const Text('Select Gender', style: TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
+                      value: _selectedGender,
+                      items: ['Male', 'Female', 'Other'].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value, style: const TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedGender = value;
+                        });
+                        Navigator.pop(context);
+                        _filterDoctors(); // Apply filter after closing dialog
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 setState(() {
                   _selectedCategory = null;
-                  _selectedAge = null;
+                  _selectedAgeRange = null;
                   _selectedGender = null;
                 });
                 _filterDoctors();
@@ -196,7 +205,6 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 15.0),
-       
             const Text(
               "All Doctors",
               style: TextStyle(
@@ -226,7 +234,7 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
                       controller: _searchController,
                       decoration: InputDecoration(
                         hintText: "Search by doctor name",
-                        hintStyle: const TextStyle(color: Color.fromARGB(255, 89, 57, 127), fontSize: 12.0),
+                        hintStyle: const TextStyle(color: Color.fromARGB(255, 89, 57, 127), fontSize: 10.0),
                         prefixIcon: const Icon(Icons.search, color: Color.fromARGB(255, 89, 57, 127), size: 18.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -248,7 +256,7 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
             ),
             const SizedBox(height: 15.0),
             SizedBox(
-              height: MediaQuery.of(context).size.height - kToolbarHeight - kBottomNavigationBarHeight - 100.0,
+              height: MediaQuery.of(context).size.height - kToolbarHeight - kBottomNavigationBarHeight - 200.0,
               child: SingleChildScrollView(
                 child: _filteredDoctors.isEmpty
                     ? const Center(
@@ -323,7 +331,6 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
         );
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 10.0),
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -344,7 +351,7 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
               child: imageUrl.isNotEmpty
                   ? Image.network(
                       imageUrl,
-                      height: 100,
+                      height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
@@ -385,8 +392,9 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
             Text(
               specialty,
               style: TextStyle(
-                  color: Color.fromARGB(255, 89, 57, 127).withOpacity(0.6),
-                  fontSize: 10.0),
+                color: Color.fromARGB(255, 89, 57, 127).withOpacity(0.6),
+                fontSize: 10.0,
+              ),
               overflow: TextOverflow.ellipsis,
             ),
             Row(

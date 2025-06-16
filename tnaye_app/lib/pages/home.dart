@@ -28,7 +28,7 @@ class _HomeState extends State<Home> {
       final snapshot = await FirebaseFirestore.instance
           .collection(collection)
           .orderBy('averageRating', descending: true)
-          .limit(3)
+          .limit(5) // Limit per collection to avoid exceeding 5 total
           .get();
       allDoctors.addAll(snapshot.docs.map((doc) => {
             ...doc.data() as Map<String, dynamic>,
@@ -36,8 +36,9 @@ class _HomeState extends State<Home> {
           }));
     }
 
+    // Sort by averageRating and limit to top 5
     allDoctors.sort((a, b) => (b['averageRating'] ?? 0.0).compareTo(a['averageRating'] ?? 0.0));
-    return allDoctors;
+    return allDoctors.take(5).toList(); // Limit to 5 doctors total
   }
 
   @override
@@ -63,16 +64,16 @@ class _HomeState extends State<Home> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildCategoryCard(context, "General Practitioner", "images/General Practitioner.jpg"),
+                    _buildCategoryCard(context, "General Practitioner", "images/General practitioner.jpg"),
                     _buildCategoryCard(context, "psychologist", "images/psychologist.jpg"),
-                    _buildCategoryCard(context, "chiropractor", "images/chiropractor.jpg"),
+                    _buildCategoryCard(context, "chiropractor", "images/Chiropractor.jpg"),
                     _buildCategoryCard(context, "dentist", "images/dentist.jpg"),
-                    _buildCategoryCard(context, "Pharmacist", "images/pharmacist.jpg"),
+                    _buildCategoryCard(context, "Pharmacist", "images/Pharmacist.jpg"),
                     _buildCategoryCard(context, "Nurse", "images/nurse.jpg"),
                   ],
                 ),
               ),
-              const SizedBox(height: 15.0),
+              const SizedBox(height: 20.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -84,40 +85,11 @@ class _HomeState extends State<Home> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AllDoctorspage()),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color.fromARGB(255, 89, 57, 127),
-                            Color.fromARGB(255, 21, 70, 95),
-                            Color.fromARGB(255, 89, 57, 127),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: const Text(
-                        "View all",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              const SizedBox(height: 15.0),
+              const SizedBox(height: 20.0),
               SizedBox(
-                height: 130,
+                height: 150,
                 child: FutureBuilder<List<Map<String, dynamic>>>(
                   future: _fetchBestDoctors(),
                   builder: (context, snapshot) {
@@ -159,6 +131,40 @@ class _HomeState extends State<Home> {
                       ),
                     );
                   },
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AllDoctorspage()),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                    margin: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color.fromARGB(255, 89, 57, 127),
+                          Color.fromARGB(255, 21, 70, 95),
+                          Color.fromARGB(255, 89, 57, 127),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                      
+                    ),
+                    child: const Text(
+                      "View all",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -229,7 +235,7 @@ class _HomeState extends State<Home> {
         );
       },
       child: Container(
-        width: 180,
+        width: 200,
         margin: const EdgeInsets.only(right: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -237,7 +243,7 @@ class _HomeState extends State<Home> {
             ClipRRect(
               borderRadius: BorderRadius.circular(15.0),
               child: imageUrl.isNotEmpty
-                  ? Image.network(
+                    ? Image.network(
                       imageUrl,
                       height: 80,
                       width: 120,
@@ -254,7 +260,7 @@ class _HomeState extends State<Home> {
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return Container(
-                          height: 80,
+                          height: 120,
                           width: 120,
                           color: Colors.grey[200],
                           child: const Center(child: CircularProgressIndicator()),
@@ -268,7 +274,7 @@ class _HomeState extends State<Home> {
                       child: const Icon(Icons.person, color: Colors.white),
                     ),
             ),
-            const SizedBox(height: 6.0),
+            const SizedBox(height: 10.0),
             Text(
               name,
               style: const TextStyle(
@@ -289,7 +295,7 @@ class _HomeState extends State<Home> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 5.0),
                 Row(
                   children: [
                     const Icon(Icons.star,

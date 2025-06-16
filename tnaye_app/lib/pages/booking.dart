@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:tnaye_app/pages/BookingConfirmation.dart';
 import 'package:tnaye_app/services/shared_pref.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'base_scaffold.dart'; // Import the BaseScaffold
+import 'base_scaffold.dart';
 
 class Booking extends StatefulWidget {
   final String service;
@@ -111,7 +111,7 @@ class _BookingState extends State<Booking> {
           TextButton(
             onPressed: () async {
               Map<String, dynamic> bookingData = {
-                'Health_professional_name': widget.service,
+                'doctorName': widget.service, // Explicitly save doctor's name
                 'imageUrl': widget.imageUrl,
                 'speciality': widget.speciality,
                 'age': widget.age,
@@ -166,7 +166,10 @@ class _BookingState extends State<Booking> {
     return BaseScaffold(
       body: SingleChildScrollView(
         child: Container(
-          margin: const EdgeInsets.only(top: 50.0, left: 50.0, right: 50.0),
+          margin: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.05,
+            vertical: 20.0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -180,28 +183,30 @@ class _BookingState extends State<Booking> {
                       padding: EdgeInsets.only(top: 20.0),
                       child: Icon(
                         Icons.arrow_back_ios_new_rounded,
-                        color: Colors.white,
+                        color: Color.fromARGB(255, 78, 39, 39),
                         size: 35.0,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 20),
-                  Text(
-                    "Book your appointment",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w500,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      "Book your Appointment",
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 89, 57, 127),
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const Spacer(),
                 ],
               ),
-              const SizedBox(height: 30.0),
+              const SizedBox(height: 20.0),
               Container(
                 padding: const EdgeInsets.all(16.0),
-                constraints: const BoxConstraints(
-                  minHeight: 200,
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.9,
                 ),
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(255, 237, 241, 240),
@@ -246,31 +251,43 @@ class _BookingState extends State<Booking> {
                         ),
                         const SizedBox(height: 10.0),
                         Text(
-                          widget.service,
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 103, 61, 172),
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
                           "Dr. ${widget.service.split(' ').last}",
                           style: const TextStyle(
                             color: Color.fromARGB(255, 136, 67, 67),
-                            fontSize: 20.0,
+                            fontSize: 15.0,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
+                        widget.speciality.trim().contains(' ')
+                          ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: widget.speciality
+                              .split(' ')
+                              .map((word) => Text(
+                                  word,
+                                  style: const TextStyle(
+                                  color: Color.fromARGB(255, 190, 67, 67),
+                                  fontSize: 10.0,
+                                  fontWeight: FontWeight.w400,
+                                  ),
+                                ))
+                              .toList(),
+                            )
+                          : Text(
+                            widget.speciality,
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 190, 67, 67),
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            ),
+                        const SizedBox(height: 5.0),
                         Text(
                           "Age: ${widget.age}",
                           style: const TextStyle(
                             color: Color.fromARGB(255, 184, 92, 92),
-                          ),
-                        ),
-                        Text(
-                          widget.speciality,
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 190, 67, 67),
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                         const SizedBox(height: 10.0),
@@ -278,13 +295,19 @@ class _BookingState extends State<Booking> {
                     ),
                     const SizedBox(width: 16.0),
                     Expanded(
-                      child: Text(
-                        widget.bio,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 14.0,
+                      child: SizedBox(
+                        height: 150.0,
+                        child: SingleChildScrollView(
+                          child: Text(
+                            widget.bio,
+                            style: const TextStyle(
+                              color: Color.fromARGB(233, 56, 48, 73),
+                              fontSize: .0,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 15,
+                          ),
                         ),
-                        textAlign: TextAlign.left,
                       ),
                     ),
                   ],
@@ -292,9 +315,11 @@ class _BookingState extends State<Booking> {
               ),
               const SizedBox(height: 20.0),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10.0),
+                    width: MediaQuery.of(context).size.width * 0.4,
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 227, 236, 234),
                       borderRadius: BorderRadius.circular(20.0),
@@ -305,7 +330,7 @@ class _BookingState extends State<Booking> {
                           "Select Date",
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 18.0,
+                            fontSize: 12.0,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -318,15 +343,15 @@ class _BookingState extends State<Booking> {
                               child: const Icon(
                                 Icons.calendar_month_rounded,
                                 color: Colors.black,
-                                size: 30.0,
+                                size: 15.0,
                               ),
                             ),
-                            const SizedBox(width: 20.0),
+                            const SizedBox(width: 5.0),
                             Text(
                               DateFormat('dd/MM/yyyy').format(_selectedDate),
                               style: const TextStyle(
                                 color: Colors.black,
-                                fontSize: 24.0,
+                                fontSize: 10.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -338,8 +363,9 @@ class _BookingState extends State<Booking> {
                   const SizedBox(width: 20.0),
                   Container(
                     padding: const EdgeInsets.all(10.0),
+                    width: MediaQuery.of(context).size.width * 0.4,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 248, 250, 249),
+                      color: const Color.fromARGB(255, 227, 236, 234),
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                     child: Column(
@@ -348,7 +374,7 @@ class _BookingState extends State<Booking> {
                           "Select Time",
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 18.0,
+                            fontSize: 12.0,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -361,15 +387,15 @@ class _BookingState extends State<Booking> {
                               child: const Icon(
                                 Icons.access_time_rounded,
                                 color: Color.fromARGB(255, 32, 1, 1),
-                                size: 25.0,
+                                size: 12.0,
                               ),
                             ),
-                            const SizedBox(width: 20.0),
+                            const SizedBox(width: 5.0),
                             Text(
                               _selectedTime.format(context),
                               style: const TextStyle(
                                 color: Colors.black,
-                                fontSize: 25.0,
+                                fontSize: 12.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -384,7 +410,7 @@ class _BookingState extends State<Booking> {
               GestureDetector(
                 onTap: () => _confirmBooking(context),
                 child: Container(
-                  width: double.infinity,
+                  width: MediaQuery.of(context).size.width * 0.9,
                   padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 81, 50, 136),
@@ -403,7 +429,7 @@ class _BookingState extends State<Booking> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20.0,
+                        fontSize: 15.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -414,7 +440,7 @@ class _BookingState extends State<Booking> {
           ),
         ),
       ),
-      currentIndex: 0, // Set to a neutral index or adjust based on context
+      currentIndex: 0,
     );
   }
 }

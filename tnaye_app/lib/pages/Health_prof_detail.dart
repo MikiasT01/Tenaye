@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:tnaye_app/pages/Booking.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:tnaye_app/services/shared_pref.dart';
 import 'base_scaffold.dart';
 
 class HealthProfDetail extends StatefulWidget {
@@ -18,8 +16,6 @@ class _HealthProffDetailState extends State<HealthProfDetail> {
   List<Map<String, dynamic>> healthProfessionals = [];
   late String doctor_type;
   bool isLoading = true;
-  double? userRating;
-  String? userId;
 
   Future<void> _loadHealthProffData() async {
     try {
@@ -42,74 +38,12 @@ class _HealthProffDetailState extends State<HealthProfDetail> {
     }
   }
 
-  Future<void> _loadUserId() async {
-    userId = await SharedPreferencesHelper().getUserId();
-    setState(() {});
-  }
-
-  Future<void> _submitRating(String doctorId) async {
-    if (userRating == null || userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a rating')),
-      );
-      return;
-    }
-
-    final doctorRef = FirebaseFirestore.instance.collection(doctor_type).doc(doctorId);
-    final ratingRef = doctorRef.collection('ratings').doc(userId);
-
-    final existingRating = await ratingRef.get();
-    if (existingRating.exists) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You have already rated this doctor!')),
-      );
-      return;
-    }
-
-    await ratingRef.set({
-      'userId': userId,
-      'rating': userRating,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-
-    await _updateAverageRating(doctorRef);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Rating submitted successfully!')),
-    );
-
-    await _loadHealthProffData();
-  }
-
-  Future<void> _updateAverageRating(DocumentReference doctorRef) async {
-    final ratingsSnapshot = await doctorRef.collection('ratings').get();
-    if (ratingsSnapshot.docs.isEmpty) {
-      await doctorRef.update({
-        'averageRating': 0.0,
-        'ratingCount': 0,
-      });
-      return;
-    }
-
-    double totalRating = 0;
-    for (var doc in ratingsSnapshot.docs) {
-      totalRating += doc['rating'] as double;
-    }
-    double averageRating = totalRating / ratingsSnapshot.docs.length;
-
-    await doctorRef.update({
-      'averageRating': averageRating,
-      'ratingCount': ratingsSnapshot.docs.length,
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     doctor_type =
         "Health_professional_${widget.service.substring(0, 1).toUpperCase() + widget.service.substring(1)}";
     _loadHealthProffData();
-    _loadUserId();
   }
 
   @override
@@ -123,16 +57,6 @@ class _HealthProffDetailState extends State<HealthProfDetail> {
             const SizedBox(height: 15.0),
             Row(
               children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    color: Color.fromARGB(255, 89, 57, 127),
-                    size: 25.0,
-                  ),
-                ),
                 const SizedBox(width: 10.0),
                 Expanded(
                   child: Text(
@@ -182,7 +106,7 @@ class _HealthProffDetailState extends State<HealthProfDetail> {
           MaterialPageRoute(
             builder: (context) => Booking(
               service: doctor['Name'],
-              imageUrl: doctor['imageurl'] ?? '', // Use 'imageurl' field
+              imageUrl: doctor['imageurl'] ?? '',
               bio: doctor['Bio'] ?? '',
               age: doctor['Age'] ?? 0,
               speciality: doctor['Speciality'] ?? '',
@@ -288,40 +212,6 @@ class _HealthProffDetailState extends State<HealthProfDetail> {
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 10),
-            RatingBar.builder(
-              initialRating: 0,
-              minRating: 1,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              itemCount: 5,
-              itemSize: 25.0,
-              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-              itemBuilder: (context, _) => const Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              onRatingUpdate: (rating) {
-                setState(() {
-                  userRating = rating;
-                });
-              },
-            ),
-            const SizedBox(height: 10),
-            Align(
-              alignment: Alignment.center,
-              child: ElevatedButton(
-                onPressed: () => _submitRating(doctor['id']),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 89, 57, 127),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-                child: const Text('Submit Rating'),
-              ),
             ),
           ],
         ),
