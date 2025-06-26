@@ -68,7 +68,7 @@ class _NotificationPageState extends State<NotificationPage> {
 
       await _updateAverageRating(doctorRef);
 
-      // Delete the booking notification after rating submission
+      //to  Delete the booking notification after rating submission
       await FirebaseFirestore.instance.collection('Bookings').doc(bookingId).delete();
 
       if (mounted) {
@@ -391,7 +391,7 @@ class _NotificationPageState extends State<NotificationPage> {
     );
   }
 
-  // Placeholder for _confirmLogout (assumed from BaseScaffold)
+  // Placeholder for _confirmLogout 
   Future<void> _confirmLogout(BuildContext context) async {
     bool confirm = await showDialog(
       context: context,

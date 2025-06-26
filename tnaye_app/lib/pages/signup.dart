@@ -49,7 +49,7 @@ class _SignUpState extends State<SignUp> {
         await SharedPreferencesHelper().saveUserId(userId);
         await SharedPreferencesHelper().saveUserName(_nameFieldController.text.trim());
         await SharedPreferencesHelper().saveUserEmail(_emailController.text.trim());
-        await SharedPreferencesHelper().saveUserImage(""); // Default empty image
+        await SharedPreferencesHelper().saveUserImage(""); 
 
         // Save user data to Firestore
         Map<String, dynamic> userInfoMap = {
@@ -65,7 +65,7 @@ class _SignUpState extends State<SignUp> {
           const SnackBar(
             content: Text(
               "Registration successful",
-              style: TextStyle(fontSize: 14.0), // Reduced from 20.0
+              style: TextStyle(fontSize: 14.0), 
             ),
             duration: Duration(seconds: 2),
           ),
@@ -94,7 +94,7 @@ class _SignUpState extends State<SignUp> {
           SnackBar(
             content: Text(
               errorMessage,
-              style: const TextStyle(fontSize: 14.0), // Reduced from 20.0
+              style: const TextStyle(fontSize: 14.0), 
             ),
           ),
         );
@@ -103,7 +103,7 @@ class _SignUpState extends State<SignUp> {
           const SnackBar(
             content: Text(
               "An unexpected error occurred. Please try again.",
-              style: TextStyle(fontSize: 14.0), // Reduced from 20.0
+              style: TextStyle(fontSize: 14.0), 
             ),
           ),
         );
@@ -116,16 +116,16 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal, // Added for sideways scrolling
+        scrollDirection: Axis.horizontal, 
         child: SingleChildScrollView(
-          scrollDirection: Axis.vertical, // Added for top-down scrolling
+          scrollDirection: Axis.vertical, 
           child: Container(
-            width: MediaQuery.of(context).size.width, // Ensure minimum width matches screen
+            width: MediaQuery.of(context).size.width, 
             child: Stack(
               children: [
                 Container(
-                  padding: const EdgeInsets.only(top: 35.0, left: 15.0), // Reduced from 50.0, 20.0
-                  height: MediaQuery.of(context).size.height / 2.5, // Adjusted for better fit
+                  padding: const EdgeInsets.only(top: 35.0, left: 15.0), 
+                  height: MediaQuery.of(context).size.height / 2.5, 
                   width: MediaQuery.of(context).size.width,
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
@@ -147,21 +147,21 @@ class _SignUpState extends State<SignUp> {
                 ),
                 Container(
                   padding: const EdgeInsets.only(
-                    top: 20.0, // Reduced from 30.0
-                    left: 15.0, // Reduced from 20.0
-                    right: 15.0, // Reduced from 20.0
-                    bottom: 15.0, // Reduced from 20.0
+                    top: 20.0, 
+                    left: 15.0, 
+                    right: 15.0, 
+                    bottom: 15.0, 
                   ),
                   margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height / 6, // Adjusted for better fit
+                    top: MediaQuery.of(context).size.height / 6, 
                   ),
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(35.0), // Reduced from 50.0
-                      topRight: Radius.circular(35.0), // Reduced from 50.0
+                      topLeft: Radius.circular(35.0), 
+                      topRight: Radius.circular(35.0), 
                     ),
                   ),
                   child: Form(
@@ -173,7 +173,7 @@ class _SignUpState extends State<SignUp> {
                           "Full Name",
                           style: TextStyle(
                             color: Color.fromARGB(255, 87, 113, 126),
-                            fontSize: 14.0, // Reduced from 20.0
+                            fontSize: 14.0, 
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -184,11 +184,11 @@ class _SignUpState extends State<SignUp> {
                             prefixIcon: const Icon(
                               Icons.person_2_sharp,
                               color: Colors.grey,
-                              size: 18.0, // Reduced icon size
+                              size: 18.0,
                             ),
-                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 12.0), // Reduced font size
+                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 12.0), 
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0), // Reduced from 20.0
+                              borderRadius: BorderRadius.circular(15.0), 
                               borderSide: const BorderSide(
                                 color: Color.fromARGB(255, 197, 196, 196),
                               ),
@@ -201,12 +201,12 @@ class _SignUpState extends State<SignUp> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 15.0), // Reduced from 20.0
+                        const SizedBox(height: 15.0), 
                         const Text(
                           "Email",
                           style: TextStyle(
                             color: Color.fromARGB(255, 144, 125, 168),
-                            fontSize: 14.0, // Reduced from 20.0
+                            fontSize: 14.0, 
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -214,10 +214,10 @@ class _SignUpState extends State<SignUp> {
                           controller: _emailController,
                           decoration: InputDecoration(
                             hintText: "Enter your email",
-                            prefixIcon: const Icon(Icons.email, color: Colors.grey, size: 18.0), // Reduced icon size
-                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 12.0), // Reduced font size
+                            prefixIcon: const Icon(Icons.email, color: Colors.grey, size: 18.0), 
+                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 12.0), 
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0), // Reduced from 20.0
+                              borderRadius: BorderRadius.circular(15.0), 
                               borderSide: const BorderSide(
                                 color: Color.fromARGB(255, 197, 196, 196),
                               ),
@@ -234,12 +234,12 @@ class _SignUpState extends State<SignUp> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 15.0), // Reduced from 20.0
+                        const SizedBox(height: 15.0),
                         const Text(
                           "Password",
                           style: TextStyle(
                             color: Color.fromARGB(255, 144, 125, 168),
-                            fontSize: 14.0, // Reduced from 20.0
+                            fontSize: 14.0, 
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -247,12 +247,12 @@ class _SignUpState extends State<SignUp> {
                           controller: _passwordController,
                           decoration: InputDecoration(
                             hintText: "Enter your Password",
-                            prefixIcon: const Icon(Icons.key, color: Colors.grey, size: 18.0), // Reduced icon size
+                            prefixIcon: const Icon(Icons.key, color: Colors.grey, size: 18.0), 
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                                 color: const Color.fromARGB(255, 238, 165, 228),
-                                size: 18.0, // Reduced icon size
+                                size: 18.0, 
                               ),
                               onPressed: () {
                                 setState(() {
@@ -260,9 +260,9 @@ class _SignUpState extends State<SignUp> {
                                 });
                               },
                             ),
-                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 12.0), // Reduced font size
+                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 12.0),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0), // Reduced from 20.0
+                              borderRadius: BorderRadius.circular(15.0), 
                               borderSide: const BorderSide(
                                 color: Color.fromARGB(255, 197, 196, 196),
                               ),
@@ -279,12 +279,12 @@ class _SignUpState extends State<SignUp> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 15.0), // Reduced from 20.0
+                        const SizedBox(height: 15.0), 
                         const Text(
                           "Confirm Password",
                           style: TextStyle(
                             color: Color.fromARGB(255, 144, 125, 168),
-                            fontSize: 14.0, // Reduced from 20.0
+                            fontSize: 14.0, 
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -292,14 +292,14 @@ class _SignUpState extends State<SignUp> {
                           controller: _confirmPasswordController,
                           decoration: InputDecoration(
                             hintText: "Confirm your Password",
-                            prefixIcon: const Icon(Icons.key, color: Colors.grey, size: 18.0), // Reduced icon size
+                            prefixIcon: const Icon(Icons.key, color: Colors.grey, size: 18.0), 
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isConfirmPasswordVisible
                                     ? Icons.visibility
                                     : Icons.visibility_off,
                                 color: Colors.grey,
-                                size: 18.0, // Reduced icon size
+                                size: 18.0, 
                               ),
                               onPressed: () {
                                 setState(() {
@@ -307,9 +307,9 @@ class _SignUpState extends State<SignUp> {
                                 });
                               },
                             ),
-                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 12.0), // Reduced font size
+                            hintStyle: const TextStyle(color: Colors.grey, fontSize: 12.0), 
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0), // Reduced from 20.0
+                              borderRadius: BorderRadius.circular(15.0), 
                               borderSide: const BorderSide(
                                 color: Color.fromARGB(255, 197, 196, 196),
                               ),
@@ -326,7 +326,7 @@ class _SignUpState extends State<SignUp> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 20.0), // Reduced from 30.0
+                        const SizedBox(height: 20.0), 
                         GestureDetector(
                           onTap: () async {
                             if (_formKey.currentState!.validate()) {
@@ -336,8 +336,8 @@ class _SignUpState extends State<SignUp> {
                           child: Container(
                             width: MediaQuery.of(context).size.width,
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, // Reduced from 15.0
-                              vertical: 10.0, // Reduced from 15.0
+                              horizontal: 10.0, 
+                              vertical: 10.0, 
                             ),
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
@@ -347,21 +347,21 @@ class _SignUpState extends State<SignUp> {
                                   Color.fromARGB(255, 89, 57, 127),
                                 ],
                               ),
-                              borderRadius: BorderRadius.circular(35.0), // Reduced from 50.0
+                              borderRadius: BorderRadius.circular(35.0), 
                             ),
                             child: const Center(
                               child: Text(
                                 "Sign up",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 18.0, // Reduced from 25.0
+                                  fontSize: 18.0, 
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 15.0), // Reduced from 20.0
+                        const SizedBox(height: 15.0), 
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -369,11 +369,11 @@ class _SignUpState extends State<SignUp> {
                               "Already have an account?",
                               style: TextStyle(
                                 color: Color.fromARGB(255, 58, 95, 114),
-                                fontSize: 10.0, // Reduced from 15.0
+                                fontSize: 10.0, 
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(width: 5.0), // Reduced from 10.0
+                            const SizedBox(width: 5.0), 
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -385,7 +385,7 @@ class _SignUpState extends State<SignUp> {
                                 "Log in",
                                 style: TextStyle(
                                   color: Color.fromARGB(255, 101, 61, 109),
-                                  fontSize: 18.0, // Reduced from 25.0
+                                  fontSize: 18.0, 
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

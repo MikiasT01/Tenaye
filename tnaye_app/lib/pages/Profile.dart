@@ -467,7 +467,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   SizedBox(height: 10.0),
-                  Row(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
@@ -487,6 +487,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 20.0),
                 ],
               ),
             ),

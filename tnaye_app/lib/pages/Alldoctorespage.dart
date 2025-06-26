@@ -15,7 +15,7 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
   List<Map<String, dynamic>> _allDoctors = [];
   List<Map<String, dynamic>> _filteredDoctors = [];
   String? _selectedCategory;
-  Map<String, int>? _selectedAgeRange; // Changed to store min and max
+  Map<String, int>? _selectedAgeRange; 
   String? _selectedGender;
 
   @override
@@ -58,7 +58,7 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
     allDoctors.sort((a, b) => (b['averageRating'] ?? 0.0).compareTo(a['averageRating'] ?? 0.0));
     setState(() {
       _allDoctors = allDoctors;
-      _filteredDoctors = allDoctors; // Initialize with all doctors
+      _filteredDoctors = allDoctors; 
     });
   }
 
@@ -148,13 +148,13 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
                           _selectedAgeRange = value;
                         });
                         Navigator.pop(context);
-                        _filterDoctors(); // Apply filter after closing dialog
+                        _filterDoctors(); 
                       },
                     ),
                     DropdownButton<String>(
                       hint: const Text('Select Gender', style: TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
                       value: _selectedGender,
-                      items: ['Male', 'Female', 'Other'].map((String value) {
+                      items: ['Male', 'Female', ].map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value, style: const TextStyle(color: Color.fromARGB(255, 89, 57, 127))),
@@ -165,7 +165,7 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
                           _selectedGender = value;
                         });
                         Navigator.pop(context);
-                        _filterDoctors(); // Apply filter after closing dialog
+                        _filterDoctors(); 
                       },
                     ),
                   ],
@@ -351,7 +351,7 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
               child: imageUrl.isNotEmpty
                   ? Image.network(
                       imageUrl,
-                      height: 200,
+                      height: 100,
                       width: double.infinity,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
@@ -365,7 +365,7 @@ class _AllDoctorspageState extends State<AllDoctorspage> {
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         return Container(
-                          height: 100,
+                          height: 200,
                           width: double.infinity,
                           color: Colors.grey[200],
                           child: const Center(child: CircularProgressIndicator()),

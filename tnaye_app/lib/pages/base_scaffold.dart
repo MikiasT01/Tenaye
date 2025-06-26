@@ -17,23 +17,22 @@ class BaseScaffold extends StatefulWidget {
 
 class _BaseScaffoldState extends State<BaseScaffold> {
   int _currentIndex = 0;
-  String? _userImageUrl; // To store the user's image URL
+  String? _userImageUrl; 
 
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.currentIndex;
-    _loadUserImage(); // Load the user image on init
+    _loadUserImage(); 
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadUserImage(); // Reload image when dependencies change (e.g., after navigation)
+    _loadUserImage();
   }
 
   Future<void> _loadUserImage() async {
-    // Fetch image URL from SharedPreferences or default to null
     final imageUrl = await SharedPreferencesHelper().getUserImage();
     if (mounted) {
       setState(() {
@@ -199,7 +198,7 @@ class _BaseScaffoldState extends State<BaseScaffold> {
                                   builder: (context) => ProfilePage(),
                                 ),
                               ).then((_) {
-                                // Refresh image after returning from ProfilePage
+
                                 _loadUserImage();
                               });
                             } else if (value == 'home') {
@@ -269,10 +268,9 @@ class _BaseScaffoldState extends State<BaseScaffold> {
                     ),
                   ),
 
-                  // Divider
                   const Divider(color: Color.fromARGB(255, 89, 57, 127)),
 
-                  // Page-specific content
+                  
                   widget.body,
                 ],
               ),

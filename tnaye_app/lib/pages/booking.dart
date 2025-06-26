@@ -136,6 +136,7 @@ class _BookingState extends State<Booking> {
                     backgroundColor: Colors.red,
                   ),
                 );
+                
                 print("Error saving booking: $e");
               }
 
@@ -302,7 +303,7 @@ class _BookingState extends State<Booking> {
                             widget.bio,
                             style: const TextStyle(
                               color: Color.fromARGB(233, 56, 48, 73),
-                              fontSize: .0,
+                              fontSize: 10.0,
                             ),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 15,

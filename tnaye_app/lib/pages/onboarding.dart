@@ -17,28 +17,28 @@ class _OnboardingState extends State<Onboarding> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 20.0), // Reduced from 30.0
+              const SizedBox(height: 30.0), 
               Text(
                 "Welcome to Tenaye",
                 style: TextStyle(
                   color: const Color.fromARGB(255, 89, 57, 127),
-                  fontSize: 21.0, // Reduced from 30.0
+                  fontSize: 21.0, 
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 15.0), // Reduced from 20.0
+              const SizedBox(height: 15.0), 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     flex: 1,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 20.0), // Reduced from 30.0
+                      padding: const EdgeInsets.only(left: 20.0), 
                       child: Text(
                         " \"Your health, \nour priority\"",
                         style: TextStyle(
                           color: const Color.fromARGB(255, 89, 57, 127),
-                          fontSize: 20.0, // Reduced from 28.0
+                          fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Roboto',
                           fontStyle: FontStyle.italic,
@@ -48,30 +48,31 @@ class _OnboardingState extends State<Onboarding> {
                   ),
                   Image.asset(
                     "images/landing_page.jpg",
-                    width: 200, // Reduced from 300
-                    height: 250, // Reduced from 400
+                    width: 200, 
+                    height: 250, 
                     fit: BoxFit.cover,
                   ),
                 ],
               ),
-              const SizedBox(height: 35.0), // Reduced from 50.0
+              const SizedBox(height: 35.0), 
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0, // Reduced from 24.0
-                  vertical: 5.0, // Reduced from 8.0
+                  horizontal: 16.0, 
+                  vertical: 5.0, 
                 ),
                 child: Text(
-                  "An app designed to manage your \nhealthcare needs and connect with \nyour doctor online",
+                  "An app designed to manage your healthcare needs and connect with your doctor online",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: const Color.fromARGB(255, 89, 57, 127),
-                    fontSize: 15.0, // Reduced from 22.0
-                    fontWeight: FontWeight.w500,
-                    height: 1.4,
+                  color: const Color.fromARGB(255, 89, 57, 127),
+                  fontSize: 15.0, 
+                  fontWeight: FontWeight.w500,
+                  height: 1.4,
+                  fontStyle: FontStyle.italic,
                   ),
                 ),
               ),
-              const SizedBox(height: 50.0), // Reduced from 30.0
+              const SizedBox(height: 50.0), 
               GestureDetector(
                 child: GestureDetector(
                   onTap: () {
@@ -82,8 +83,8 @@ class _OnboardingState extends State<Onboarding> {
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 15.0, // Slightly reduced from 20.0
-                      vertical: 15.0, // Slightly reduced from 20.0
+                      horizontal: 15.0, 
+                      vertical: 15.0,
                     ),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
@@ -93,20 +94,26 @@ class _OnboardingState extends State<Onboarding> {
                           Color.fromARGB(255, 89, 57, 127),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(15), // Reduced from 20
+                      borderRadius: BorderRadius.circular(15), 
                     ),
                     child: Text(
                       "Consult our Health experts",
                       style: TextStyle(
                         color: const Color.fromARGB(255, 239, 239, 241),
-                        fontSize: 14.0, // Reduced from 20.0
+                        fontSize: 14.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 30.0), // Reduced from 40.0
+              const SizedBox(height: 30.0), 
+
+
+
+              // another logic for the doctor interface 
+
+              
               // GestureDetector(
               //   child: GestureDetector(
               //     onTap: () {

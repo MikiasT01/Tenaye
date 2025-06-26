@@ -36,17 +36,17 @@ class _BookingConfirmationState extends State<BookingConfirmation> {
       body: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.05, // 5% margin
+            horizontal: MediaQuery.of(context).size.width * 0.05, 
             vertical: 20.0,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Booking Confirmation Content (moved inside BaseScaffold body)
+
               Container(
                 padding: const EdgeInsets.all(16.0),
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.9, // 90% of screen width
+                  maxWidth: MediaQuery.of(context).size.width * 0.9, 
                 ),
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(255, 237, 241, 240),
@@ -155,7 +155,7 @@ class _BookingConfirmationState extends State<BookingConfirmation> {
                   );
                 },
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.9, // 90% width
+                  width: MediaQuery.of(context).size.width * 0.9, 
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 81, 50, 136),
@@ -184,7 +184,7 @@ class _BookingConfirmationState extends State<BookingConfirmation> {
           ),
         ),
       ),
-      currentIndex: 0, // Set to Home index since it returns to Home
+      currentIndex: 0, 
     );
   }
 }
